@@ -94,6 +94,12 @@
         #icon-moon { display: block; }
         [data-theme="dark"] #icon-sun { display: block; fill: currentColor;}
         [data-theme="dark"] #icon-moon { display: none; }
+
+        /* ================= TOMBOL GENERATE NIK ================= */
+        .label-with-action { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding: 0 4px; }
+        .label-with-action label { font-size: 13.5px; font-weight: 600; color: var(--text-main); }
+        .action-text { font-size: 11.5px; font-weight: 700; color: var(--primary); cursor: pointer; user-select: none; transition: var(--transition); background-color: rgba(139, 92, 246, 0.1); padding: 5px 10px; border-radius: 6px; border: 1px solid rgba(139, 92, 246, 0.2); }
+        .action-text:hover { background-color: var(--primary); color: white; transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.2); }
     </style>
 </head>
 <body>
@@ -114,6 +120,11 @@
         <p class="subtitle">Ekstraksi Offline & Akurat</p>
         <div class="badge-regional">Regional: Khusus Sulawesi Selatan</div>
         
+        <div class="label-with-action">
+            <label>Nomor Induk Kependudukan</label>
+            <span class="action-text" onclick="generateNikMakassar()" title="Buat NIK Acak Kota Makassar">🎲 Generate (Makassar)</span>
+        </div>
+
         <div class="input-group">
             <input type="text" id="nikInput" placeholder="Masukkan 16 Digit NIK" oninput="formatInput(this)">
             
@@ -394,6 +405,33 @@
                 "09": "September", "10": "Oktober", "11": "November", "12": "Desember"
             };
             return bulan[kode] || kode;
+        }
+
+        function generateNikMakassar() {
+            const kodeProvKota = "7371";
+            const kodeKecamatan = String(Math.floor(Math.random() * 15) + 1).padStart(2, '0');
+            const prefix = kodeProvKota + kodeKecamatan;
+            const tahunSaatIni = 2026;
+            const tahunLahir = Math.floor(Math.random() * ((tahunSaatIni - 18) - (tahunSaatIni - 80) + 1)) + (tahunSaatIni - 80);
+            const bulanLahir = Math.floor(Math.random() * 12) + 1;
+            let tanggalLahir = Math.floor(Math.random() * 28) + 1;
+
+            const isPerempuan = Math.random() > 0.5;
+            if (isPerempuan) {
+                tanggalLahir += 40;
+            }
+
+            const strTanggal = String(tanggalLahir).padStart(2, '0');
+            const strBulan = String(bulanLahir).padStart(2, '0');
+            const strTahun = String(tahunLahir).slice(-2);
+            const kodeUnik = String(Math.floor(Math.random() * 19) + 1).padStart(4, '0');
+            const hasilNik = prefix + strTanggal + strBulan + strTahun + kodeUnik;
+            const inputNik = document.getElementById('nikInput');
+            inputNik.value = hasilNik;
+            
+            formatInput(inputNik);
+            
+            cekNIK();
         }
     </script>
 </body>
