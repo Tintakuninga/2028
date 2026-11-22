@@ -100,6 +100,7 @@
         .label-with-action label { font-size: 13.5px; font-weight: 600; color: var(--text-main); }
         .action-text { font-size: 11.5px; font-weight: 700; color: var(--primary); cursor: pointer; user-select: none; transition: var(--transition); background-color: rgba(139, 92, 246, 0.1); padding: 5px 10px; border-radius: 6px; border: 1px solid rgba(139, 92, 246, 0.2); }
         .action-text:hover { background-color: var(--primary); color: white; transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.2); }
+        .action-group { display: flex; gap: 5px; }
 
         /* ================= PENYESUAIAN TOMBOL COPY & CLEAR ================= */
         .input-group input { padding-right: 70px; } 
@@ -183,7 +184,10 @@
         
         <div class="label-with-action">
             <label>NIK</label>
-            <span class="action-text" onclick="generateNikMakassar()" title="Buat NIK Acak">🎲 Generate</span>
+            <div class="action-group">
+                <span class="action-text" onclick="generateNikMakassar()" title="Buat NIK Acak">🎲 Generate M</span>
+                <span class="action-text" onclick="generateNikTamalate()" title="Buat NIK Acak">🎲 Generate T</span>
+            </div>
         </div>
 
         <div class="input-group">
@@ -521,6 +525,31 @@
             
             formatInput(inputNik);
             
+            cekNIK();
+        }
+
+        function generateNikTamalate() {
+            const prefix = "737110"; 
+            
+            const tahunSaatIni = 2026;
+            const tahunLahir = Math.floor(Math.random() * ((tahunSaatIni - 18) - (tahunSaatIni - 80) + 1)) + (tahunSaatIni - 80);
+            const bulanLahir = Math.floor(Math.random() * 12) + 1;
+            let tanggalLahir = Math.floor(Math.random() * 28) + 1;
+
+            const isPerempuan = Math.random() > 0.5;
+            if (isPerempuan) {
+                tanggalLahir += 40;
+            }
+
+            const strTanggal = String(tanggalLahir).padStart(2, '0');
+            const strBulan = String(bulanLahir).padStart(2, '0');
+            const strTahun = String(tahunLahir).slice(-2);
+            const kodeUnik = String(Math.floor(Math.random() * 19) + 1).padStart(4, '0');
+            const hasilNik = prefix + strTanggal + strBulan + strTahun + kodeUnik;
+            const inputNik = document.getElementById('nikInput');
+            inputNik.value = hasilNik;
+            
+            formatInput(inputNik);
             cekNIK();
         }
 
