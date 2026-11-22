@@ -526,29 +526,20 @@
             const nik = document.getElementById('nikInput').value;
             if (nik.length !== 16) return;
 
-            // Cek apakah NIK sudah ada di riwayat agar tidak duplikat
             if (dataRiwayat.some(item => item.nik === nik)) {
                 alert("NIK ini sudah tersimpan di riwayat!");
                 return;
             }
 
-            // Ambil data yang tampil di layar
             const dataBaru = {
-                nik: nik,
-                kabupaten: document.getElementById('resKabupaten').innerText,
-                gender: document.getElementById('resGender').innerText,
-                ttl: document.getElementById('resTTL').innerText.replace('Tersalin!', '').trim(),
-                waktu: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+                nik: nik
             };
 
-            // Masukkan ke array (di urutan paling depan) dan simpan ke Local Storage
             dataRiwayat.unshift(dataBaru);
             localStorage.setItem('riwayatNIK', JSON.stringify(dataRiwayat));
-
-            // Ubah tampilan tombol sejenak sebagai tanda sukses
             const btnSimpan = document.getElementById('btnSimpan');
             const originalText = btnSimpan.innerHTML;
-            btnSimpan.innerHTML = "✅ Berhasil Disimpan!";
+            btnSimpan.innerHTML = "✅ NIK Tersimpan!";
             btnSimpan.style.backgroundColor = "#059669";
             
             setTimeout(() => {
@@ -557,7 +548,6 @@
             }, 2000);
         }
 
-        // Menampilkan data ke dalam panel samping
         function renderRiwayat() {
             const container = document.getElementById('historyList');
             container.innerHTML = '';
@@ -570,14 +560,14 @@
             dataRiwayat.forEach((item, index) => {
                 const card = document.createElement('div');
                 card.className = 'history-item';
+                card.style.display = 'flex';
+                card.style.justifyContent = 'space-between';
+                card.style.alignItems = 'center';
+                
                 card.innerHTML = `
-                    <span class="history-nik">${item.nik}</span>
-                    <div class="history-detail">
-                        ${item.kabupaten} <br>
-                        ${item.gender} • ${item.ttl} <br>
-                        <small style="opacity:0.7; margin-top:4px; display:block;">Disimpan: ${item.waktu}</small>
-                    </div>
-                    <div class="history-actions">
+                    <span class="history-nik" style="margin-bottom: 0;">${item.nik}</span>
+                    
+                    <div style="display: flex; gap: 5px;">
                         <button class="btn-hist" onclick="salinHistori('${item.nik}')" title="Salin NIK">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                         </button>
@@ -590,7 +580,6 @@
             });
         }
 
-        // Hapus spesifik item
         function hapusRiwayat(index) {
             if (confirm("Hapus NIK ini dari riwayat?")) {
                 dataRiwayat.splice(index, 1);
@@ -599,7 +588,6 @@
             }
         }
 
-        // Salin dari riwayat
         function salinHistori(nik) {
             navigator.clipboard.writeText(nik).then(() => {
                 alert(`NIK ${nik} berhasil disalin!`);
