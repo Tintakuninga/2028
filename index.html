@@ -131,6 +131,14 @@
         .btn-hist svg { width: 14px; height: 14px; }
         
         .empty-history { text-align: center; color: var(--text-muted); font-size: 14px; margin-top: 40px; }
+
+        /* ================= SIDEBAR FOOTER ================= */
+        .sidebar-footer {
+            padding: 15px;
+            border-top: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            margin-top: auto;
+        }
     </style>
 </head>
 <body>
@@ -160,6 +168,11 @@
             </button>
         </div>
         <div class="sidebar-content" id="historyList">
+        </div>
+        <div class="sidebar-footer" id="historyFooter" style="display: none;">
+            <button class="btn-submit" onclick="exportRiwayatTxt()" style="background-color: #3b82f6; width: 100%; border-radius: 8px;">
+                📄 Export ke TXT
+            </button>
         </div>
     </div>
 
@@ -550,12 +563,16 @@
 
         function renderRiwayat() {
             const container = document.getElementById('historyList');
+            const footer = document.getElementById('historyFooter');
             container.innerHTML = '';
 
             if (dataRiwayat.length === 0) {
                 container.innerHTML = '<div class="empty-history">Belum ada data NIK yang tersimpan.</div>';
+                footer.style.display = 'none';
                 return;
             }
+
+            footer.style.display = 'block';
 
             dataRiwayat.forEach((item, index) => {
                 const card = document.createElement('div');
@@ -592,6 +609,28 @@
             navigator.clipboard.writeText(nik).then(() => {
                 alert(`NIK ${nik} berhasil disalin!`);
             });
+        }
+
+        function exportRiwayatTxt() {
+            if (dataRiwayat.length === 0) return;
+
+            let isiTeks = "=== RIWAYAT DATA NIK ===\n\n";
+            dataRiwayat.forEach((item, index) => {
+                isiTeks += `${index + 1}. ${item.nik}\n`;
+            });
+
+            const blob = new Blob([isiTeks], { type: "text/plain" });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "Riwayat_NIK.txt";
+            document.body.appendChild(a);
+            
+            a.click();
+            
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
     </script>
 </body>
