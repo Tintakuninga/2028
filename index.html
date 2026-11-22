@@ -227,8 +227,12 @@
                 <div class="result-label">Tempat, Tanggal Lahir</div>
                 <div class="result-value" id="resTTL">-</div>
             </div>
-            <button class="btn-submit" id="btnSimpan" onclick="simpanKeRiwayat()" style="margin-top: 15px; background-color: #10b981;">
-                💾 Simpan
+            <button class="btn-submit" id="btnSimpan" onclick="simpanKeRiwayat()" style="margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                </svg>
+                Bookmark
             </button>
         </div>
     </div>
@@ -538,26 +542,23 @@
         function simpanKeRiwayat() {
             const nik = document.getElementById('nikInput').value;
             if (nik.length !== 16) return;
-
             if (dataRiwayat.some(item => item.nik === nik)) {
-                alert("NIK ini sudah tersimpan di riwayat!");
+                alert("NIK ini sudah tersimpan di Bookmark!");
                 return;
             }
-
-            const dataBaru = {
-                nik: nik
-            };
+            const dataBaru = { nik: nik };
 
             dataRiwayat.unshift(dataBaru);
             localStorage.setItem('riwayatNIK', JSON.stringify(dataRiwayat));
             const btnSimpan = document.getElementById('btnSimpan');
             const originalText = btnSimpan.innerHTML;
-            btnSimpan.innerHTML = "✅ NIK Tersimpan!";
-            btnSimpan.style.backgroundColor = "#059669";
+            
+            btnSimpan.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Tersimpan!`;
+            btnSimpan.style.backgroundColor = "#059669"; 
             
             setTimeout(() => {
                 btnSimpan.innerHTML = originalText;
-                btnSimpan.style.backgroundColor = "#10b981";
+                btnSimpan.style.backgroundColor = "";
             }, 2000);
         }
 
