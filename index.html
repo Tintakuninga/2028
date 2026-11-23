@@ -140,6 +140,21 @@
             background-color: var(--card-bg);
             margin-top: auto;
         }
+
+        /* ================= MODAL KONFIRMASI ================= */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(3px); display: none; justify-content: center; align-items: center; z-index: 3000; opacity: 0; transition: opacity 0.3s; }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        .modal-card { background-color: var(--card-bg); border-radius: 16px; padding: 24px; width: 90%; max-width: 320px; text-align: center; box-shadow: var(--shadow); transform: translateY(20px); transition: transform 0.3s; border: 1px solid var(--border-color); }
+        .modal-overlay.active .modal-card { transform: translateY(0); }
+        .modal-card h3 { margin-top: 0; margin-bottom: 10px; color: var(--text-main); font-size: 18px; }
+        .modal-card p { color: var(--text-muted); font-size: 14px; margin-bottom: 24px; }
+        .modal-actions { display: flex; gap: 10px; justify-content: center; }
+        .btn-modal { flex: 1; padding: 12px; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; transition: var(--transition); }
+        .btn-cancel { background-color: var(--border-color); color: var(--text-main); }
+        .btn-cancel:hover { background-color: #d1d5db; }
+        [data-theme="dark"] .btn-cancel:hover { background-color: #4b5563; }
+        .btn-confirm { background-color: #ef4444; color: white; }
+        .btn-confirm:hover { background-color: #dc2626; }
     </style>
 </head>
 <body>
@@ -174,6 +189,17 @@
             <button class="btn-submit" onclick="exportRiwayatTxt()" style="background-color: #3b82f6; width: 100%; border-radius: 8px;">
                 📄 Export ke TXT
             </button>
+        </div>
+    </div>
+
+    <div id="customModal" class="modal-overlay">
+        <div class="modal-card">
+            <h3>Konfirmasi</h3>
+            <p id="modalMessage">Apakah Anda yakin ingin menghapus?</p>
+            <div class="modal-actions">
+                <button class="btn-modal btn-cancel" onclick="closeModal()">Batal</button>
+                <button id="modalBtnConfirm" class="btn-modal btn-confirm">Ya, Hapus</button>
+            </div>
         </div>
     </div>
 
@@ -615,7 +641,7 @@
                     <span class="history-nik" style="margin-bottom: 0;">${item.nik}</span>
                     
                     <div style="display: flex; gap: 5px;">
-                        <button class="btn-hist" onclick="salinHistori('${item.nik}')" title="Salin NIK">
+                        <button class="btn-hist" onclick="salinHistori('${item.nik}', this)" title="Salin NIK">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                         </button>
                         <button class="btn-hist del" onclick="hapusRiwayat(${index})" title="Hapus Data">
@@ -627,19 +653,50 @@
             });
         }
 
-        function hapusRiwayat(index) {
-            if (confirm("Hapus NIK ini dari riwayat?")) {
-                dataRiwayat.splice(index, 1);
-                localStorage.setItem('riwayatNIK', JSON.stringify(dataRiwayat));
-                renderRiwayat();
-            }
-        }
-
-        function salinHistori(nik) {
+        // ================= LOGIKA SALIN TANPA ALERT =================
+        function salinHistori(nik, btnElement) {
             navigator.clipboard.writeText(nik).then(() => {
-                alert(`NIK ${nik} berhasil disalin!`);
+                // Simpan ikon dan warna asli
+                const originalHtml = btnElement.innerHTML;
+                const originalColor = btnElement.style.color;
+                const originalBorder = btnElement.style.borderColor;
+
+                // Ubah menjadi ikon centang dan warna hijau
+                btnElement.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+                btnElement.style.color = '#10b981';
+                btnElement.style.borderColor = '#10b981';
+
+                // Kembalikan ke semula setelah 1.5 detik
+                setTimeout(() => {
+                    btnElement.innerHTML = originalHtml;
+                    btnElement.style.color = originalColor;
+                    btnElement.style.borderColor = originalBorder;
+                }, 1500);
             });
         }
+
+        // ================= LOGIKA MODAL HAPUS =================
+        let indexYangAkanDihapus = null;
+
+        function hapusRiwayat(index) {
+            indexYangAkanDihapus = index;
+            document.getElementById('modalMessage').innerText = "Hapus NIK ini dari riwayat?";
+            document.getElementById('customModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('customModal').classList.remove('active');
+            indexYangAkanDihapus = null;
+        }
+
+        document.getElementById('modalBtnConfirm').addEventListener('click', () => {
+            if (indexYangAkanDihapus !== null) {
+                dataRiwayat.splice(indexYangAkanDihapus, 1);
+                localStorage.setItem('riwayatNIK', JSON.stringify(dataRiwayat));
+                renderRiwayat();
+                closeModal();
+            }
+        });
 
         function exportRiwayatTxt() {
             if (dataRiwayat.length === 0) return;
