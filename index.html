@@ -203,6 +203,16 @@
         </div>
     </div>
 
+    <div id="infoModal" class="modal-overlay">
+        <div class="modal-card">
+            <h3>Informasi</h3>
+            <p id="infoModalMessage">Pesan informasi di sini.</p>
+            <div class="modal-actions">
+                <button class="btn-modal" onclick="closeInfoModal()" style="background-color: var(--primary); color: white;">Tutup</button>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <h2>Dekoder & Generate NIK</h2>
         <p class="subtitle">Extraksi NIK Secara Offline</p>
@@ -598,7 +608,7 @@
             const nik = document.getElementById('nikInput').value;
             if (nik.length !== 16) return;
             if (dataRiwayat.some(item => item.nik === nik)) {
-                alert("NIK ini sudah tersimpan di Bookmark!");
+                showInfoModal("NIK ini sudah tersimpan di Bookmark!");
                 return;
             }
             const dataBaru = { nik: nik };
@@ -687,6 +697,15 @@
         function closeModal() {
             document.getElementById('customModal').classList.remove('active');
             indexYangAkanDihapus = null;
+        }
+
+        function showInfoModal(pesan) {
+            document.getElementById('infoModalMessage').innerText = pesan;
+            document.getElementById('infoModal').classList.add('active');
+        }
+
+        function closeInfoModal() {
+            document.getElementById('infoModal').classList.remove('active');
         }
 
         document.getElementById('modalBtnConfirm').addEventListener('click', () => {
