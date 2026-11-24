@@ -205,15 +205,13 @@
         </div>
         <div class="sidebar-content" id="historyList">
         </div>
-        <div class="sidebar-footer" style="display: flex; flex-direction: column; gap: 8px;">
-            <!-- Hanya tombol Export yang disembunyikan saat riwayat kosong -->
-            <div id="historyFooter" style="display: none; width: 100%;">
-                <button class="btn-submit" onclick="exportRiwayatTxt()" style="background-color: #3b82f6; width: 100%; border-radius: 8px; margin: 0;">
+        <div class="sidebar-footer" style="display: flex; gap: 8px; align-items: stretch;">
+            <div id="historyFooter" style="display: none; flex: 1;">
+                <button class="btn-submit" onclick="exportRiwayatTxt()" style="background-color: #3b82f6; width: 100%; height: 100%; border-radius: 8px; margin: 0; padding: 12px 8px; font-size: 13px;">
                     📄 Export
                 </button>
             </div>
-            <!-- Tombol Import selalu tampil agar bisa memulihkan data saat kosong -->
-            <button class="btn-submit" onclick="document.getElementById('importFile').click()" style="background-color: #3b82f6; width: 100%; border-radius: 8px; margin: 0;">
+            <button class="btn-submit" onclick="document.getElementById('importFile').click()" style="background-color: #3b82f6; flex: 1; border-radius: 8px; margin: 0; padding: 12px 8px; font-size: 13px;">
                 📥 Import
             </button>
             <input type="file" id="importFile" accept=".txt" style="display: none;" onchange="importRiwayatTxt(event)">
