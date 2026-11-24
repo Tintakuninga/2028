@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Autentikasi Akses</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
         :root {
@@ -43,7 +44,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
         </div>
         <h2>Insert Code</h2>
-        <p>Masukkan kode akses bulan ini untuk membuka aplikasi.</p>
+        <p>Masukkan kode akses...</p>
         
         <input type="password" id="codeInput" placeholder="••••••" maxlength="6" onkeypress="if(event.key === 'Enter') verifyCode()">
         <button onclick="verifyCode()">Verifikasi Akses</button>
@@ -52,22 +53,18 @@
     </div>
 
     <script>
-        // Sinkronisasi tema gelap/terang dengan aplikasi utama
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
 
-        // Fungsi pembuat kode otomatis bulanan (6 Digit)
         function getMonthlyCode() {
             const now = new Date();
             const year = now.getFullYear();
-            const month = now.getMonth() + 1; // 1 sampai 12
+            const month = now.getMonth() + 1;
             
-            // Rumus rahasia Anda (bisa diubah angkanya sesuai keinginan)
             const rawCode = ((year * 13) + (month * 79) + 5432) % 1000000;
             return String(rawCode).padStart(6, '0');
         }
 
-        // Ambil identitas bulan saat ini (contoh: "2026-11")
         function getCurrentMonthKey() {
             const now = new Date();
             return `${now.getFullYear()}-${now.getMonth() + 1}`;
@@ -79,10 +76,8 @@
             const validCode = getMonthlyCode();
 
             if (input === validCode) {
-                // Simpan status login khusus untuk bulan ini
                 localStorage.setItem('auth_month', getCurrentMonthKey());
-                // Arahkan ke halaman utama (ganti ke index.html jika nama file utama Anda index.html)
-                window.location.replace('index_2.html');
+                window.location.replace('index.html');
             } else {
                 errorText.style.display = 'block';
                 document.getElementById('codeInput').value = '';
