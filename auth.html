@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autentikasi Akses</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        :root {
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --primary: #8b5cf6;
+            --primary-hover: #7c3aed;
+            --border-color: #e5e7eb;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        [data-theme="dark"] {
+            --bg-color: #111827;
+            --card-bg: #1f2937;
+            --text-main: #f9fafb;
+            --text-muted: #9ca3af;
+            --border-color: #374151;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .auth-card { background-color: var(--card-bg); padding: 40px 30px; border-radius: 16px; box-shadow: var(--shadow); width: 100%; max-width: 380px; text-align: center; border: 1px solid var(--border-color); }
+        .lock-icon { width: 50px; height: 50px; background: rgba(139, 92, 246, 0.1); color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
+        h2 { font-size: 20px; margin-bottom: 8px; }
+        p { font-size: 13.5px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.5; }
+        input { width: 100%; padding: 14px; border: 1px solid var(--border-color); border-radius: 10px; font-size: 18px; background-color: var(--bg-color); color: var(--text-main); text-align: center; letter-spacing: 4px; font-weight: 700; margin-bottom: 16px; }
+        input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2); }
+        button { width: 100%; background-color: var(--primary); color: white; padding: 14px; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        button:hover { background-color: var(--primary-hover); }
+        .error-text { color: #ef4444; font-size: 13px; margin-top: 12px; display: none; font-weight: 500; }
+    </style>
+</head>
+<body>
+
+    <div class="auth-card">
+        <div class="lock-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+        </div>
+        <h2>Insert Code</h2>
+        <p>Masukkan kode akses bulan ini untuk membuka aplikasi.</p>
+        
+        <input type="password" id="codeInput" placeholder="••••••" maxlength="6" onkeypress="if(event.key === 'Enter') verifyCode()">
+        <button onclick="verifyCode()">Verifikasi Akses</button>
+        
+        <div id="errorText" class="error-text">Kode salah! Akses ditolak.</div>
+    </div>
+
+    <script>
+        // Sinkronisasi tema gelap/terang dengan aplikasi utama
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
+
+        // Fungsi pembuat kode otomatis bulanan (6 Digit)
+        function getMonthlyCode() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth() + 1; // 1 sampai 12
+            
+            // Rumus rahasia Anda (bisa diubah angkanya sesuai keinginan)
+            const rawCode = ((year * 13) + (month * 79) + 5432) % 1000000;
+            return String(rawCode).padStart(6, '0');
+        }
+
+        // Ambil identitas bulan saat ini (contoh: "2026-11")
+        function getCurrentMonthKey() {
+            const now = new Date();
+            return `${now.getFullYear()}-${now.getMonth() + 1}`;
+        }
+
+        function verifyCode() {
+            const input = document.getElementById('codeInput').value.trim();
+            const errorText = document.getElementById('errorText');
+            const validCode = getMonthlyCode();
+
+            if (input === validCode) {
+                // Simpan status login khusus untuk bulan ini
+                localStorage.setItem('auth_month', getCurrentMonthKey());
+                // Arahkan ke halaman utama (ganti ke index.html jika nama file utama Anda index.html)
+                window.location.replace('index_2.html');
+            } else {
+                errorText.style.display = 'block';
+                document.getElementById('codeInput').value = '';
+                document.getElementById('codeInput').focus();
+            }
+        }
+    </script>
+</body>
+</html>

@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pengecek Data</title>
     
+    <script>
+        (function() {
+            const now = new Date();
+            const currentMonthKey = `${now.getFullYear()}-${now.getMonth() + 1}`;
+            const savedAuth = localStorage.getItem('auth_month');
+            if (savedAuth !== currentMonthKey) {
+                window.location.replace('auth.html');
+            }
+        })();
+    </script>
     <!-- Link ke file Manifest PWA -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#8b5cf6">

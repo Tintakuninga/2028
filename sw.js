@@ -1,7 +1,8 @@
-const CACHE_NAME = 'cek-nik-v21'; 
+const CACHE_NAME = 'cek-nik-v22'; 
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
+  './auth.html',
   './nasional.html',
   './manifest.json',
   './data-wilayah.json',
