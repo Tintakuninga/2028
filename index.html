@@ -205,10 +205,18 @@
         </div>
         <div class="sidebar-content" id="historyList">
         </div>
-        <div class="sidebar-footer" id="historyFooter" style="display: none;">
-            <button class="btn-submit" onclick="exportRiwayatTxt()" style="background-color: #3b82f6; width: 100%; border-radius: 8px;">
-                📄 Export ke TXT
+        <div class="sidebar-footer" style="display: flex; flex-direction: column; gap: 8px;">
+            <!-- Hanya tombol Export yang disembunyikan saat riwayat kosong -->
+            <div id="historyFooter" style="display: none; width: 100%;">
+                <button class="btn-submit" onclick="exportRiwayatTxt()" style="background-color: #3b82f6; width: 100%; border-radius: 8px; margin: 0;">
+                    📄 Export
+                </button>
+            </div>
+            <!-- Tombol Import selalu tampil agar bisa memulihkan data saat kosong -->
+            <button class="btn-submit" onclick="document.getElementById('importFile').click()" style="background-color: #3b82f6; width: 100%; border-radius: 8px; margin: 0;">
+                📥 Import
             </button>
+            <input type="file" id="importFile" accept=".txt" style="display: none;" onchange="importRiwayatTxt(event)">
         </div>
     </div>
 
@@ -672,6 +680,8 @@
 
             dataRiwayat.unshift(dataBaru);
             localStorage.setItem('riwayatNIK', JSON.stringify(dataRiwayat));
+            renderRiwayat();
+
             const btnSimpan = document.getElementById('btnSimpan');
             const originalText = btnSimpan.innerHTML;
             
@@ -794,6 +804,58 @@
             
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
+        }
+
+        function importRiwayatTxt(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const isiTeks = e.target.result;
+
+                // Membaca baris format "1. 737110..." (baik 16 digit rapat maupun dengan spasi)
+                const polaNik = /\b(?:\d{16}|\d{6}[\s-]\d{6}[\s-]\d{4}|\d{4}[\s-]\d{4}[\s-]\d{4}[\s-]\d{4})\b/g;
+                const daftarNik = isiTeks.match(polaNik);
+
+                if (!daftarNik || daftarNik.length === 0) {
+                    showInfoModal("Tidak ditemukan NIK yang valid di dalam file TXT.");
+                    event.target.value = "";
+                    return;
+                }
+
+                let berhasil = 0;
+                let duplikat = 0;
+
+                daftarNik.forEach(rawNik => {
+                    const nikBersih = rawNik.replace(/\D/g, '');
+
+                    // Lewati jika NIK sudah ada di riwayat
+                    if (dataRiwayat.some(item => item.nik === nikBersih)) {
+                        duplikat++;
+                        return;
+                    }
+
+                    // Sesuaikan properti di bawah jika renderRiwayat() menampilkan field lain selain nik
+                    dataRiwayat.push({
+                        nik: nikBersih
+                    });
+
+                    berhasil++;
+                });
+
+                if (berhasil > 0) {
+                    localStorage.setItem('riwayatNIK', JSON.stringify(dataRiwayat));
+                    renderRiwayat();
+                }
+
+                const infoDuplikat = duplikat > 0 ? ` (${duplikat} duplikat dilewati)` : '';
+                showInfoModal(`${berhasil} NIK berhasil diimport dari file TXT${infoDuplikat}.`);
+
+                event.target.value = "";
+            };
+
+            reader.readAsText(file);
         }
     </script>
 </body>
