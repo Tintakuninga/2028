@@ -35,6 +35,9 @@
         button { width: 100%; background-color: var(--primary); color: white; padding: 14px; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.2s; }
         button:hover { background-color: var(--primary-hover); }
         .error-text { color: #ef4444; font-size: 13px; margin-top: 12px; display: none; font-weight: 500; }
+        input {
+            -webkit-text-security: disc;
+        }
     </style>
 </head>
 <body>
@@ -46,7 +49,7 @@
         <h2>Insert Code</h2>
         <p>Masukkan kode akses untuk membuka aplikasi</p>
         
-        <input type="password" id="codeInput" placeholder="••••••" maxlength="6" onkeypress="if(event.key === 'Enter') verifyCode()">
+        <input type="text" id="codeInput" inputmode="numeric" pattern="[0-9]*" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="••••••" maxlength="6" oninput="this.value = this.value.replace(/\D/g, '')" onkeypress="if(event.key === 'Enter') verifyCode()">
         <button onclick="verifyCode()">Verifikasi Akses</button>
         
         <div id="errorText" class="error-text">Kode salah! Akses ditolak.</div>
