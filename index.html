@@ -15,7 +15,7 @@
             }
         })();
     </script>
-    <!-- Link ke file Manifest PWA -->
+
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#8b5cf6">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -186,6 +186,74 @@
             .txt-mobile { display: inline; }
             .action-text { padding: 5px 7px; font-size: 11px; }
         }
+
+        /* ================= FLOATING BOTTOM DOCK ================= */
+        @media (max-width: 600px) {
+            /* Ruang ekstra di bawah agar kartu/konten terbawah tidak tertutup dock */
+            body {
+                padding-top: 20px;
+                padding-bottom: 95px;
+            }
+
+            /* Ubah .header-actions menjadi kapsul melayang di bagian bawah */
+            .header-actions {
+                position: fixed;
+                top: auto;
+                right: auto;
+                bottom: calc(18px + env(safe-area-inset-bottom));
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 90; /* Di bawah sidebar & modal agar tidak menimpa saat keduanya dibuka */
+
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                width: max-content;
+                max-width: calc(100vw - 24px);
+                padding: 7px 9px;
+                border-radius: 999px;
+
+                /* Efek kaca buram (Glassmorphism) - Light Mode */
+                background-color: rgba(255, 255, 255, 0.85);
+                backdrop-filter: blur(14px);
+                -webkit-backdrop-filter: blur(14px);
+                border: 1px solid rgba(0, 0, 0, 0.08);
+                box-shadow: 0 10px 28px rgba(0, 0, 0, 0.14);
+            }
+
+            /* Efek kaca buram saat Dark Mode aktif */
+            [data-theme="dark"] .header-actions {
+                background-color: rgba(31, 41, 55, 0.85);
+                border: 1px solid rgba(255, 255, 255, 0.12);
+                box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+            }
+
+            /* Gaya tombol Update App & Install App di dalam dock */
+            .header-actions .pwa-btn {
+                height: 40px;
+                padding: 0 14px;
+                border-radius: 999px;
+                font-size: 12.5px;
+                white-space: nowrap;
+                box-shadow: none;
+            }
+
+            /* Gaya tombol Dark Mode & Bookmark di dalam dock */
+            .header-actions .theme-toggle {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                box-shadow: none;
+                flex-shrink: 0;
+            }
+
+            /* Efek pantulan halus saat tombol disentuh */
+            .header-actions button:active {
+                transform: scale(0.92);
+            }
+        }
     </style>
 </head>
 <body>
@@ -252,7 +320,7 @@
     <div class="container">
         <h2>Generate NIK v2.030</h2>
         <p class="subtitle">Extraksi NIK Secara Offline</p>
-        <div class="badge-regional">Region: Sulawesi Selatan</div>
+        <!--<div class="badge-regional">Region: Sulawesi Selatan</div>  -->
         
         <div class="label-with-action">
             <label>NIK</label>
