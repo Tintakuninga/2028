@@ -1,6 +1,6 @@
 {
-  "name": "Pengecek Data NIK",
-  "short_name": "Cek NIK",
+  "name": "Generate NIK",
+  "short_name": "Generate NIK",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
