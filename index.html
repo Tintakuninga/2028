@@ -66,7 +66,7 @@
         .container { background-color: var(--card-bg); padding: 40px 30px; border-radius: 16px; box-shadow: var(--shadow); width: 100%; max-width: 450px; transition: var(--transition); border: 1px solid var(--border-color); }
         h2 { text-align: center; font-weight: 700; margin-bottom: 8px; color: var(--text-main); }
         p.subtitle { text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 5px; }
-        .badge-regional { display: inline-block; background-color: #ede9fe; color: #06113c; font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; font-weight: 600; margin: 0 auto 25px auto; text-align: center; width: 100%; letter-spacing: 0.5px;}
+        .badge-regional { display: inline-block; background-color: #ede9fe; color: #4c1d95; font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; font-weight: 600; margin: 0 auto 25px auto; text-align: center; width: 100%; letter-spacing: 0.5px;}
         [data-theme="dark"] .badge-regional { background-color: #4c1d95; color: #ddd6fe; }
 
         .input-group { position: relative; margin-bottom: 20px; }
@@ -318,7 +318,7 @@
     </div>
 
     <div class="container">
-        <h2>Generate NIK v2.035</h2>
+        <h2>Generate NIK v2.037</h2>
         <p class="subtitle">Extraksi NIK Secara Offline</p>
         <div class="badge-regional">Region: Sulawesi Selatan</div>
         
@@ -326,19 +326,19 @@
             <label>NIK</label>
             <div class="action-group">
                 <span class="action-text" onclick="generateNikMakassar()" title="Buat NIK Acak Makassar">
-                    🎲 <span class="txt-desktop">Makassar</span><span class="txt-mobile">Roll MKS</span>
+                    🎲 <span class="txt-desktop">Makassar</span><span class="txt-mobile">Makassar</span>
                 </span>
                 <span class="action-text" onclick="generateNikTamalate()" title="Buat NIK Acak Kecamatan Tamalate">
-                    🎲 <span class="txt-desktop">Tamalate</span><span class="txt-mobile">Roll TAM</span>
+                    🎲 <span class="txt-desktop">Tamalate</span><span class="txt-mobile">Tamalate</span>
                 </span>
                 <span class="action-text" onclick="generateNikRappocini()" title="Buat NIK Acak Kecamatan Rappocini">
-                    🎲 <span class="txt-desktop">Rappocini</span><span class="txt-mobile">Roll RAP</span>
+                    🎲 <span class="txt-desktop">Rappocini</span><span class="txt-mobile">Rappocini</span>
                 </span>
             </div>
         </div>
 
         <div class="input-group">
-            <input type="text" id="nikInput" placeholder="Masukkan 16 Digit NIK" oninput="formatInput(this)">
+            <input type="text" id="nikInput" inputmode="numeric" pattern="[0-9]*" maxlength="16" autocomplete="off" placeholder="Masukkan 16 Digit NIK" oninput="formatInput(this)">
             
             <button class="btn-action" id="btnPaste" onclick="pasteNIK()" title="Tempel NIK dari Clipboard">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
