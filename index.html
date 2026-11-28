@@ -50,13 +50,12 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
         body { background-color: var(--bg-color); color: var(--text-main); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; transition: var(--transition); }
         
-        /* Modifikasi Layout Header Actions (Tombol PWA & Tema) */
         .header-actions { position: absolute; top: 20px; right: 20px; display: flex; gap: 10px; align-items: center; }
         
         .pwa-btn { background-color: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 600; font-size: 13px; cursor: pointer; display: none; transition: var(--transition); box-shadow: var(--shadow); }
         .pwa-btn:hover { background-color: var(--primary-hover); transform: translateY(-2px); }
         
-        #btnUpdatePWA { background-color: #10b981; } /* Warna hijau untuk tombol update */
+        #btnUpdatePWA { background-color: #10b981; }
         #btnUpdatePWA:hover { background-color: #059669; }
 
         .theme-toggle { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main); padding: 10px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 45px; height: 45px; box-shadow: var(--shadow); transition: var(--transition); }
@@ -105,7 +104,7 @@
         [data-theme="dark"] #icon-sun { display: block; fill: currentColor;}
         [data-theme="dark"] #icon-moon { display: none; }
 
-        /* ================= TOMBOL GENERATE NIK ================= */
+        /* ================= TOMBOL GENERATE ================= */
         .label-with-action { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding: 0 4px; }
         .label-with-action label { font-size: 13.5px; font-weight: 600; color: var(--text-main); }
         .action-text { font-size: 11.5px; font-weight: 700; color: var(--primary); cursor: pointer; user-select: none; transition: var(--transition); background-color: rgba(139, 92, 246, 0.1); padding: 5px 10px; border-radius: 6px; border: 1px solid rgba(139, 92, 246, 0.2); }
@@ -336,9 +335,9 @@
     </div>
 
     <div class="container">
-        <h2>Generate NIK v2.038</h2>
+        <h2>𝙶𝚎𝚗𝚎𝚛𝚊𝚝𝚎 𝙽𝙸𝙺 v2.041</h2>
         <p class="subtitle">Extraksi NIK Secara Offline</p>
-        <div class="badge-regional">Region: Sulawesi Selatan</div>
+        <div class="badge-regional">𝘙𝘦𝘨𝘪𝘰𝘯: Sulawesi Selatan</div>
         
         <div class="label-with-action">
             <label>NIK</label>
@@ -407,20 +406,17 @@
     </div>
 
     <script>
-        // --- LOGIKA PWA & SERVICE WORKER ---
         let deferredPrompt;
         let newWorker;
         const btnInstallPWA = document.getElementById('btnInstallPWA');
         const btnUpdatePWA = document.getElementById('btnUpdatePWA');
 
-        // Menangkap event instalasi PWA
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            btnInstallPWA.style.display = 'block'; // Tampilkan tombol instal
+            btnInstallPWA.style.display = 'block';
         });
 
-        // Trigger instalasi saat tombol ditekan
         btnInstallPWA.addEventListener('click', async () => {
             if (deferredPrompt) {
                 deferredPrompt.prompt();
@@ -432,19 +428,16 @@
             }
         });
 
-        // Sembunyikan tombol jika aplikasi sudah diinstal
         window.addEventListener('appinstalled', () => {
             btnInstallPWA.style.display = 'none';
         });
 
-        // Registrasi Service Worker & Deteksi Update
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js').then(reg => {
                     reg.addEventListener('updatefound', () => {
                         newWorker = reg.installing;
                         newWorker.addEventListener('statechange', () => {
-                            // Jika ada update baru yang selesai di-install dan siap digunakan
                             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
                                 btnUpdatePWA.style.display = 'block';
                             }
@@ -453,7 +446,6 @@
                 }).catch(err => console.error('Service Worker Gagal:', err));
             });
 
-            // Reload halaman setelah worker baru mengambil alih
             let refreshing;
             navigator.serviceWorker.addEventListener('controllerchange', () => {
                 if (refreshing) return;
@@ -462,13 +454,11 @@
             });
         }
 
-        // Trigger Update saat tombol ditekan
         btnUpdatePWA.addEventListener('click', () => {
             if (newWorker) {
                 newWorker.postMessage({ action: 'skipWaiting' });
             }
         });
-        // --- END LOGIKA PWA ---
 
         function toggleTheme() {
             const htmlNode = document.documentElement;
@@ -840,7 +830,6 @@
             });
         }
 
-        // ================= LOGIKA SALIN TANPA ALERT =================
         function salinHistori(nik, btnElement) {
             navigator.clipboard.writeText(nik).then(() => {
                 const originalHtml = btnElement.innerHTML;
@@ -859,7 +848,6 @@
             });
         }
 
-        // ================= LOGIKA MODAL HAPUS =================
         let indexYangAkanDihapus = null;
 
         function hapusRiwayat(index) {
@@ -920,8 +908,6 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 const isiTeks = e.target.result;
-
-                // Membaca baris format "1. 737110..." (baik 16 digit rapat maupun dengan spasi)
                 const polaNik = /\b(?:\d{16}|\d{6}[\s-]\d{6}[\s-]\d{4}|\d{4}[\s-]\d{4}[\s-]\d{4}[\s-]\d{4})\b/g;
                 const daftarNik = isiTeks.match(polaNik);
 
