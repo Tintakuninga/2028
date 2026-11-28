@@ -72,19 +72,77 @@
             return `${now.getFullYear()}-${now.getMonth() + 1}`;
         }
 
-        function verifyCode() {
-            const input = document.getElementById('codeInput').value.trim();
-            const errorText = document.getElementById('errorText');
-            const validCode = getMonthlyCode();
+        const AUTH_API_URL = "https://script.google.com/macros/s/AKfycbxlx8AgyefD5dz4ZKWmHHPOS3MhY7ZKEdZgMrXZWUPsUKk1w2oVi9KBhN9SD5V3pLE/exec";
+        const TARGET_PAGE = "index.html";
 
-            if (input === validCode) {
-                localStorage.setItem('auth_month', getCurrentMonthKey());
-                window.location.replace('index.html');
-            } else {
-                errorText.style.display = 'block';
-                document.getElementById('codeInput').value = '';
-                document.getElementById('codeInput').focus();
+        const MAX_ATTEMPTS = 5;
+        const LOCK_MINUTES = 5;
+
+        async function verifyCode() {
+            const inputEl = document.getElementById('codeInput');
+            const errorEl = document.getElementById('errorMsg');
+            const btnEl = document.querySelector('button');
+            const code = inputEl.value.trim();
+
+            const lockUntil = Number(localStorage.getItem('authLockUntil') || 0);
+            if (Date.now() < lockUntil) {
+                const sisaMenit = Math.ceil((lockUntil - Date.now()) / 60000);
+                tampilkanError(errorEl, `Terlalu banyak percobaan. Coba lagi dalam ${sisaMenit} menit.`);
+                return;
             }
+
+            if (code.length < 6) {
+                tampilkanError(errorEl, "Masukkan 6 digit kode akses.");
+                return;
+            }
+
+            const teksAsli = btnEl.innerText;
+            btnEl.disabled = true;
+            btnEl.innerText = "Memverifikasi...";
+            if (errorEl) errorEl.style.display = "none";
+
+            try {
+                const response = await fetch(AUTH_API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify({ action: "login", code: code })
+                });
+
+                const result = await response.json();
+
+                if (result.valid) {
+                    localStorage.removeItem('authFailCount');
+                    localStorage.removeItem('authLockUntil');
+                    localStorage.setItem('authMonth', result.monthKey);
+                    localStorage.setItem('authToken', result.token);
+
+                    window.location.replace(TARGET_PAGE);
+                } else {
+                    const fails = Number(localStorage.getItem('authFailCount') || 0) + 1;
+                    localStorage.setItem('authFailCount', fails);
+
+                    if (fails >= MAX_ATTEMPTS) {
+                        localStorage.setItem('authLockUntil', Date.now() + (LOCK_MINUTES * 60 * 1000));
+                        localStorage.setItem('authFailCount', 0);
+                        tampilkanError(errorEl, `Salah ${MAX_ATTEMPTS}x. Akses dikunci selama ${LOCK_MINUTES} menit.`);
+                    } else {
+                        tampilkanError(errorEl, `${result.message} (Sisa percobaan: ${MAX_ATTEMPTS - fails})`);
+                    }
+                    inputEl.value = "";
+                    inputEl.focus();
+                }
+            } catch (err) {
+                tampilkanError(errorEl, "Gagal terhubung ke server. Pastikan koneksi internet aktif.");
+            } finally {
+                btnEl.disabled = false;
+                btnEl.innerText = teksAsli;
+            }
+        }
+
+        function tampilkanError(el, pesan) {
+            if (!el) return;
+            el.innerText = pesan;
+            el.style.display = "block";
         }
     </script>
 </body>

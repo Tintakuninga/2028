@@ -6,12 +6,37 @@
     <title>Pengecek Data</title>
     
     <script>
-        (function() {
+        (function checkAuthGate() {
+            const AUTH_API_URL = "https://script.google.com/macros/s/AKfycbxlx8AgyefD5dz4ZKWmHHPOS3MhY7ZKEdZgMrXZWUPsUKk1w2oVi9KBhN9SD5V3pLE/exec";
             const now = new Date();
-            const currentMonthKey = `${now.getFullYear()}-${now.getMonth() + 1}`;
-            const savedAuth = localStorage.getItem('auth_month');
-            if (savedAuth !== currentMonthKey) {
-                window.location.replace('auth.html');
+            const currentMonthKey = now.getFullYear() + "-" + String(now.getMonth() + 1).padStart(2, "0");
+
+            const savedMonth = localStorage.getItem("authMonth");
+            const savedToken = localStorage.getItem("authToken");
+
+            if (!savedToken || savedMonth !== currentMonthKey) {
+                localStorage.removeItem("authMonth");
+                localStorage.removeItem("authToken");
+                window.location.replace("auth.html");
+                return;
+            }
+
+            if (navigator.onLine) {
+                fetch(AUTH_API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify({ action: "checkSession", token: savedToken })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (!data.valid) {
+                        localStorage.removeItem("authMonth");
+                        localStorage.removeItem("authToken");
+                        window.location.replace("auth.html");
+                    }
+                })
+                .catch(() => {
+                });
             }
         })();
     </script>
