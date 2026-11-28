@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cek-nik-v43'; 
+const CACHE_NAME = 'cek-nik-v44'; 
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
